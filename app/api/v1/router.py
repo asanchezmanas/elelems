@@ -1,6 +1,6 @@
 # app/api/v1/router.py
 from fastapi import APIRouter
-from app.api.v1.endpoints import documents, generate, content
+from app.api.v1.endpoints import documents, generate, content, custom_prompt
 
 api_router = APIRouter()
 
@@ -21,4 +21,10 @@ api_router.include_router(
     content.router,
     prefix="/content",
     tags=["Content"]
+)
+
+api_router.include_router(
+    custom_prompt.router,
+    prefix="/custom-prompt",
+    tags=["Custom Prompt"]
 )
