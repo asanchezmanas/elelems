@@ -2,9 +2,9 @@
 from app.services.document_parser import DocumentParser
 from app.services.chunking_service import ChunkingService
 from app.services.embedding_service import EmbeddingService
-from app.repositories.storage_repository import StorageRepository
-from app.repositories.document_repository import DocumentRepository
-from app.repositories.vector_repository import VectorRepository
+from app.schemas.repositories.storage_repository import StorageRepository
+from app.schemas.repositories.document_repository import DocumentRepository
+from app.schemas.repositories.vector_repository import VectorRepository
 from app.schemas.document import DocumentCreate, DocumentStatus, DocumentProcessingResult
 from app.schemas.search import SearchResult
 from typing import List, Optional

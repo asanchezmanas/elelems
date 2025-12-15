@@ -1,6 +1,7 @@
 # app/services/billing_service.py
 import stripe
 from app.services.usage_tracking import UsageTrackingService
+from app.core.config import settings
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 

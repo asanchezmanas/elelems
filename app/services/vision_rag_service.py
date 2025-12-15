@@ -1,5 +1,5 @@
-# Para ecommerce: analizar imágenes de productos
 # app/services/vision_rag_service.py
+from typing import List
 class VisionRAGService:
     """
     RAG con soporte para imágenes
