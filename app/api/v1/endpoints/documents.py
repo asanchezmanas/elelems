@@ -1,7 +1,9 @@
 # app/api/v1/endpoints/documents.py
-from fastapi import APIRouter, UploadFile, File, Form, HTTPException
+from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends
 from app.services.rag_service import RAGService
 from app.schemas.documents import DocumentResponse, SearchRequest, SearchResponse
+from app.services.generation_service import GenerationService
+from app.schemas.generation import GenerateRequest, GenerateResponse
 
 router = APIRouter()
 

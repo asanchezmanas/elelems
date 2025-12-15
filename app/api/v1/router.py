@@ -1,6 +1,6 @@
 # app/api/v1/router.py
 from fastapi import APIRouter
-from app.api.v1.endpoints import documents, generation
+from app.api.v1.endpoints import documents, generate, content
 
 api_router = APIRouter()
 
@@ -12,7 +12,13 @@ api_router.include_router(
 )
 
 api_router.include_router(
-    generation.router,
+    generate.router,
     prefix="/generation",
     tags=["Generation"]
+)
+
+api_router.include_router(
+    content.router,
+    prefix="/content",
+    tags=["Content"]
 )
