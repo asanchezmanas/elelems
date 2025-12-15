@@ -105,6 +105,22 @@ CREATE TRIGGER update_documents_updated_at
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
+-- Añadir user_id a todas las tablas
+ALTER TABLE documents ADD COLUMN user_id UUID NOT NULL;
+ALTER TABLE user_api_keys ADD COLUMN user_id UUID NOT NULL;
+ALTER TABLE usage_stats ADD COLUMN user_id UUID NOT NULL;
+
+-- RLS (Row Level Security) para aislar usuarios
+ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can only see their own documents"
+ON documents FOR SELECT
+USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can only insert their own documents"
+ON documents FOR INSERT
+WITH CHECK (auth.uid() = user_id);
+
 -- ============================================
 -- Verificar creación
 -- ============================================
