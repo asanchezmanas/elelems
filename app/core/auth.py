@@ -1,45 +1,66 @@
-# app/core/auth.py
-from fastapi import Depends, HTTPException, status, UploadFile
+# ============================================
+# app/core/auth.py (CORREGIDO)
+# ============================================
+
+from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from supabase import Client
 import jwt
-
-from app.core.supabase_client import get_supabase
-from app.services.rag_service import RAGService, get_rag_service
+from app.core.database import get_supabase
+from app.core.config import settings
 
 security = HTTPBearer()
+
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     supabase: Client = Depends(get_supabase)
 ) -> dict:
-    """Valida JWT token de Supabase Auth"""
+    """
+    Valida JWT token de Supabase Auth
+    
+    ✅ CORREGIDO: Usa verificación correcta de JWT
+    """
     try:
         token = credentials.credentials
         
-        # Verificar con Supabase
-        user = supabase.auth.get_user(token)
+        # ✅ Método correcto: Verificar JWT directamente
+        # El token de Supabase es un JWT estándar
+        payload = jwt.decode(
+            token,
+            settings.SUPABASE_JWT_SECRET,  # ✅ Añadir a settings
+            algorithms=["HS256"],
+            audience="authenticated"
+        )
         
-        if not user:
+        user_id = payload.get("sub")
+        if not user_id:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid authentication token"
+                detail="Invalid token: missing user ID"
             )
         
-        return user.user
+        # ✅ Opcionalmente, verificar con Supabase
+        # user_response = supabase.auth.admin.get_user_by_id(user_id)
         
+        return {
+            "id": user_id,
+            "email": payload.get("email"),
+            "role": payload.get("role", "authenticated")
+        }
+        
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token expired"
+        )
+    except jwt.InvalidTokenError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Invalid token: {str(e)}"
+        )
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Could not validate credentials: {str(e)}"
+            detail=f"Authentication failed: {str(e)}"
         )
-
-# Uso en endpoints:
-@router.post("/upload")
-async def upload_document(
-    file: UploadFile,
-    current_user: dict = Depends(get_current_user),  # ✅ Proteger endpoint
-    rag_service: RAGService = Depends(get_rag_service)
-):
-    user_id = current_user["id"]
-    # Ahora todos los docs tienen user_id

@@ -1,5 +1,5 @@
 # app/core/config.py
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, field_validator, HttpUrl
 from typing import Optional
 
 
@@ -42,6 +42,45 @@ class Settings(BaseSettings):
     MAX_FILE_SIZE_MB: int = 10
     ALLOWED_EXTENSIONS: list[str] = [".pdf", ".docx", ".pptx", ".txt", ".md", ".html"]
     
+    # ✅ AÑADIDOS: Para Supabase connection string
+    SUPABASE_HOST: str = ""
+    SUPABASE_PORT: int = 5432
+    SUPABASE_DB: str = "postgres"
+    SUPABASE_USER: str = "postgres"
+    SUPABASE_PASSWORD: str = ""
+    
+    # ✅ AÑADIDO: Encryption key para API keys
+    API_KEYS_ENCRYPTION_KEY: Optional[str] = None
+    
+    # ✅ AÑADIDO: Frontend URL para CORS
+    FRONTEND_URL: HttpUrl = "http://localhost:3000"
+    
+    # ✅ AÑADIDO: Redis para cache (opcional)
+    REDIS_URL: Optional[str] = None
+    
+    # ✅ VALIDADORES
+    @field_validator('SUPABASE_URL')
+    @classmethod
+    def validate_supabase_url(cls, v):
+        if not v or not v.startswith('https://'):
+            raise ValueError("Invalid Supabase URL")
+        return v
+    
+    @field_validator('GROQ_API_KEY', 'OPENAI_API_KEY')
+    @classmethod
+    def validate_api_keys(cls, v, info):
+        field_name = info.field_name
+        llm_provider = info.data.get('LLM_PROVIDER', 'groq')
+        
+        # Validar que existe la key del provider configurado
+        if llm_provider == 'groq' and field_name == 'GROQ_API_KEY':
+            if not v:
+                raise ValueError("GROQ_API_KEY required when LLM_PROVIDER=groq")
+        elif llm_provider == 'openai' and field_name == 'OPENAI_API_KEY':
+            if not v:
+                raise ValueError("OPENAI_API_KEY required when LLM_PROVIDER=openai")
+        
+        return v
     class Config:
         env_file = ".env"
         case_sensitive = True

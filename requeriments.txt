@@ -1,33 +1,66 @@
+
+# ============================================
+# requirements.txt (ACTUALIZADO Y CORREGIDO)
+# ============================================
+
+
 # FastAPI
 fastapi==0.109.0
 uvicorn[standard]==0.27.0
-python-multipart==0.0.6
+python-multipart==0.0.9  # ✅ Actualizado
 
 # LLM Providers
-groq==0.4.0
-openai==1.10.0
+groq==0.4.2  # ✅ Actualizado
+openai==1.12.0  # ✅ Actualizado
 
-# RAG Stack
-docling==1.0.0
+# ✅ LlamaIndex Stack (NUEVO)
+llama-index-core==0.10.0
+llama-index-embeddings-huggingface==0.1.4
+llama-index-vector-stores-supabase==0.1.3
+llama-index-readers-file==0.1.4
+
+# Embeddings
 sentence-transformers==2.3.1
-tiktoken==0.5.2
-torch>=2.0.0  # Para sentence-transformers
+torch>=2.1.0  # ✅ Actualizado
 
 # Database
-supabase==2.3.4
-pgvector==0.2.4
+supabase==2.3.5  # ✅ Actualizado
+pgvector==0.2.5  # ✅ Actualizado
+psycopg2-binary==2.9.9  # ✅ Para LlamaIndex-Supabase
+
+# Document Processing
+# docling==1.0.0  # ❌ Opcional, LlamaIndex readers lo reemplazan
 
 # Utilities
-pydantic==2.5.3
+pydantic==2.6.0  # ✅ Actualizado
 pydantic-settings==2.1.0
-python-dotenv==1.0.0
+python-dotenv==1.0.1  # ✅ Actualizado
 httpx==0.26.0
+tiktoken==0.6.0  # ✅ Actualizado
+
+# Security
+cryptography==42.0.0  # ✅ Para encriptación de API keys
+PyJWT==2.8.0  # ✅ Para verificación de tokens
+
+# Caching & Queue (opcional pero recomendado)
+redis==5.0.1  # ✅ Para cache y queue
+celery==5.3.4  # ✅ Para tareas async
+
+# Monitoring (opcional)
+# sentry-sdk==1.40.0
+# prometheus-client==0.19.0
 
 # Development & Testing
-pytest==7.4.3
-pytest-asyncio==0.23.2
+pytest==7.4.4  # ✅ Actualizado
+pytest-asyncio==0.23.3  # ✅ Actualizado
 pytest-cov==4.1.0
 pytest-mock==3.12.0
 pytest-timeout==2.2.0
-black==23.12.1
-ruff==0.1.9
+httpx==0.26.0  # Para test client
+faker==22.2.0  # ✅ Para datos de prueba
+
+# Code Quality
+black==24.1.1  # ✅ Actualizado
+ruff==0.2.0  # ✅ Actualizado
+mypy==1.8.0  # ✅ Type checking
+pre-commit==3.6.0  # ✅ Git hooks
