@@ -1,5 +1,8 @@
 # app/workers/tasks.py
 from celery import Celery
+from typing import List
+from app.core.config import settings
+
 
 celery_app = Celery(
     "rag_ecommerce",
